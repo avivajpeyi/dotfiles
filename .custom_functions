@@ -137,3 +137,8 @@ function ligo_help(){
 function pcdev(){
     gsissh ldas-pcdev$1.ligo.caltech.edu
 }
+
+
+function bash_prompt(){
+    PS1='${debian_chroot:+($debian_chroot)}'${blu}'$(git_branch)'${pur}' \W'${grn}' \$ '${clr}
+}

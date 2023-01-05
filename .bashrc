@@ -39,3 +39,9 @@ export compaspc='avi@mu00150555.physics.monash.edu'
 
 
 source ~/.custom_functions
+
+function bash_prompt(){
+    PS1='${debian_chroot:+($debian_chroot)}'${blu}'$(git_branch)'${pur}' \W'${grn}' \$ '${clr}
+}
+
+bash_prompt
