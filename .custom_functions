@@ -53,7 +53,7 @@ mvg() {
 
 # ls after every cd
 cd() {
-	builtin cd "$@" && ls;
+	builtin cd "$@" && colorls;
 }
 
 # Special git-status
