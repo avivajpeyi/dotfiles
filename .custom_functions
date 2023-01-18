@@ -1,0 +1,144 @@
+####################
+# Custom Functions #
+####################
+
+
+
+
+# Copies a directory and then traverses to that specified directory
+cpg() {
+	if [ -d "$2" ]; then
+		cp $1 $2 && cd $2
+	else
+		cp $1 $2
+	fi
+}
+
+# Extracts a bundled archive based on its extension
+extract() {
+	 if [ -f $1 ]; then
+		 case $1 in
+			 *.tar.bz2)   tar xjf $1        ;;
+			 *.tar.gz)    tar xzf $1     ;;
+			 *.bz2)       bunzip2 $1       ;;
+			 *.rar)       rar x $1     ;;
+			 *.gz)        gunzip $1     ;;
+			 *.tar)       tar xf $1        ;;
+			 *.tbz2)      tar xjf $1      ;;
+			 *.tgz)       tar xzf $1       ;;
+			 *.zip)       unzip $1     ;;
+			 *.Z)         uncompress $1  ;;
+			 *.7z)        7z x $1    ;;
+			 *)           echo "'$1' cannot be extracted via extract()" ;;
+		 esac
+	 else
+		 echo "'$1' is not a valid file"
+	 fi
+}
+
+# Makes a directory and traverses into it after creation
+mkcd() {
+	mkdir -p $1
+	cd $1
+}
+
+# Moves a directory and then traverses to that specified directory
+mvg() {
+	if [ -d "$2" ]; then
+		mv $1 $2 && cd $2
+	else
+		mv $1 $2
+	fi
+}
+
+# ls after every cd
+cd() {
+	builtin cd "$@" && ls;
+}
+
+# Special git-status
+function gss() {
+	if git ls-files >& /dev/null; then
+		git branch -avv;
+		echo "";
+		git status -s
+	else
+		echo 'This is not a git directory'
+	fi
+}
+
+# Special git init (git_init my_proj)
+function git_init() {
+    if [ -z "$1" ]; then
+        printf "%s\n" "Please provide a directory name.";
+    else
+        mkdir "$1";
+        builtin cd "$1";
+        pwd;
+        git init;
+        touch readme.md .gitignore LICENSE;
+        echo "# $(basename $PWD)" >> readme.md
+    fi
+}
+
+function git_branch() {
+    if [ -d .git ] ; then
+        printf "%s" "($(git branch 2> /dev/null | awk '/\*/{print $2}'))";
+    fi
+}
+
+
+# Find the largest file in dir
+function find_largest_files() {
+    du -h -x -s -- * | sort -r -h | head -20;
+}
+
+
+# pretty print tail -f
+function ttail() {
+  tail -f  $1 | bat --paging=never -l log
+}
+
+# print some sys info
+function dets(){
+	clear
+
+	printf "\n"
+	printf "   %s\n" "IP ADDR: $(curl ifconfig.me)"
+	printf "   %s\n" "USER: $(echo $USER)"
+	printf "   %s\n" "DATE: $(date)"
+	printf "   %s\n" "UPTIME: $(uptime -p)"
+	printf "   %s\n" "HOSTNAME: $(hostname -f)"
+	printf "   %s\n" "CPU: $(awk -F: '/model name/{print $2}' | head -1)"
+	printf "   %s\n" "KERNEL: $(uname -rms)"
+	printf "   %s\n" "PACKAGES: $(dpkg --get-selections | wc -l)"
+	printf "   %s\n" "RESOLUTION: $(xrandr | awk '/\*/{printf $1" "}')"
+	printf "   %s\n" "MEMORY: $(free -m -h | awk '/Mem/{print $3"/"$2}')"
+	printf "\n"
+
+}
+
+# print LIGO helps
+function ligo_help(){
+	printf "-----LIGO HELP-----"
+	printf "- To enter"
+	printf "ligo-proxy-init avi.vajpeyi"
+	printf "gsissh -X ldas-pcdev3.ligo.caltech.edu"
+  printf ""
+	printf "- To copy file local->cluster"
+	printf "gsiscp <local_file> avi.vajpeyi@ldas-pcdev3.ligo.caltech.edu:/home/avi.vajpeyi/<cluster_dir>"
+  printf ""
+	printf "- To copy file cluster->local"
+	printf "gsiscp avi.vajpeyi@ldas-pcdev3.ligo.caltech.edu:/home/avi.vajpeyi/<cluster_dir> <local_dir>"
+  printf "-------------------------"
+}
+
+
+function pcdev(){
+    gsissh ldas-pcdev$1.ligo.caltech.edu
+}
+
+
+function bash_prompt(){
+    PS1='${debian_chroot:+($debian_chroot)}'${blu}'$(git_branch)'${pur}' \W'${grn}' \$ '${clr}
+}
