@@ -1,0 +1,9 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+.vim/
+.viminfo
+*.swp
+*.swo
+*.bak
