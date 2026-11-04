@@ -1,6 +1,12 @@
 # macOS already includes Zsh. Keep the shell small and quick to start.
 [[ -o interactive ]] || return 0
 
+# Also cover interactive non-login shells (for example editor terminals).
+if [[ -d "$HOME/.gdvm/bin" ]]; then
+  typeset -U path
+  path=("$HOME/.gdvm/bin" "$HOME/.gdvm/bin/current_godot" $path)
+fi
+
 HISTFILE="$HOME/.zsh_history"
 HISTSIZE=50000
 SAVEHIST=50000
@@ -11,6 +17,10 @@ setopt AUTO_CD
 
 autoload -Uz compinit
 compinit
+
+if command -v gdvm >/dev/null 2>&1; then
+  eval "$(gdvm completions zsh)"
+fi
 
 [[ -f "$HOME/.zsh_aliases" ]] && source "$HOME/.zsh_aliases"
 [[ -f "$HOME/.zsh_functions" ]] && source "$HOME/.zsh_functions"

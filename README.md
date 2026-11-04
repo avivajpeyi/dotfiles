@@ -88,6 +88,33 @@ See [uv with Jupyter](https://docs.astral.sh/uv/guides/integration/jupyter/).
 
 ## Optional: Godot and private remote networking
 
+For per-project Godot versions, install [GDVM](https://gdvm.io/) explicitly
+from a terminal:
+
+```sh
+./setup.sh --gdvm
+# Skip Homebrew and VS Code installation if they are already set up:
+./setup.sh --gdvm --skip-brew --skip-vscode
+```
+
+`--gdvm` is independent of `--extras` and off by default. It downloads
+`https://gdvm.io/install.sh` over HTTPS to a temporary file, stops on download
+or shell syntax errors, then runs the upstream installer as your user.
+This executes the current upstream script; inspect the
+[installer](https://gdvm.io/install.sh) before opting in. Existing GDVM
+installations (on PATH or in `~/.gdvm/bin`) are left alone; update explicitly
+with `gdvm upgrade`.
+
+The wrapper disables upstream shell-profile edits because `.zshrc` is linked
+into this repository. Its "Could not detect shell profile file" notice is
+expected. These dotfiles manage GDVM's PATH and Zsh completion instead. The
+upstream installer can ask about a shortcut and file associations; those
+choices are yours. Restart Terminal afterward, then use `gdvm --help`,
+`gdvm list`, or `gdvm run` inside a game project. Select/pin the editor version
+that the project was tested with; this setup does not select one for you.
+
+If you prefer a single Homebrew-managed Godot app, use the existing extras:
+
 ```sh
 cd ~/dotfiles
 ./setup.sh --extras
@@ -98,6 +125,8 @@ version may be newer than the editor used for a particular game project.
 Tailscale requires a separate sign-in and setup; it is not enabled by this
 installer. To install only one extra, use `brew install --cask godot`
 or `brew install --cask tailscale-app`.
+Choose GDVM or the Homebrew Godot app for your workflow. If both are installed,
+these shell settings put GDVM first; `gdvm run` makes the choice explicit.
 
 ### SSH **into** this Mac
 
@@ -142,7 +171,29 @@ git pull
 ./setup.sh
 ```
 
-Flags: `--extras`, `--skip-brew`, `--skip-vscode`, `--help`.
+Flags: `--extras`, `--gdvm`, `--skip-brew`, `--skip-vscode`, `--help`.
 `brew bundle check --file ~/dotfiles/Brewfile` reports missing core packages.
 Keep machine-specific Git overrides in `~/.gitconfig.local` rather than
 tracking personal credentials or secrets.
+
+## A few optional next additions
+
+Keep scientific packages and checks in each project's locked environment.
+These are recommendations, not part of the installer:
+
+- [direnv](https://direnv.net/): load project environment variables when
+  entering a directory. Review each `.envrc` before `direnv allow`; it runs
+  shell code and needs a [Zsh hook](https://direnv.net/docs/hook.html).
+- [pre-commit](https://pre-commit.com/): run Ruff and basic file checks before
+  committing. Configure hooks per repository; Ruff has a
+  [supported integration](https://docs.astral.sh/ruff/integrations/#pre-commit).
+- [GDScript Toolkit](https://github.com/Scony/godot-gdscript-toolkit):
+  `gdlint` and `gdformat` for Godot projects. Match its major version to
+  Godot; for Godot 4, add `uv add --dev 'gdtoolkit==4.*'` in the project's
+  Python tooling environment and commit the lockfile.
+- For monitoring, start with the included **Stats + btop** before adding
+  another monitor. For secure remote access, use the optional **Tailscale
+  app + macOS Remote Login + SSH keys**, as described above. The separate
+  [Tailscale SSH server](https://tailscale.com/docs/features/tailscale-ssh)
+  requires the open-source `tailscaled` variant on macOS; the GUI app alone
+  does not provide it.

@@ -5,16 +5,19 @@ set -euo pipefail
 repo_dir="$(cd "$(dirname "$0")" && pwd -P)"
 install_brew=true
 install_extras=false
+install_gdvm=false
 install_vscode=true
 backup_dir=""
 
 usage() {
   cat <<'HELP'
-Usage: ./setup.sh [--extras] [--skip-brew] [--skip-vscode] [--help]
+Usage: ./setup.sh [--extras] [--gdvm] [--skip-brew] [--skip-vscode] [--help]
 
 Installs the core Brewfile, backs up and symlinks dotfiles, and installs
 VS Code Python extensions if the 'code' CLI is available.
 --extras enables the optional Godot, Tailscale and ffmpeg Brewfile.
+--gdvm runs the upstream interactive Godot Version Manager installer.
+       Separate from --extras; also works with --skip-brew.
 No services, remote login, SSH keys, or cleanup jobs are enabled.
 HELP
 }
@@ -22,6 +25,7 @@ HELP
 while (( $# > 0 )); do
   case "$1" in
     --extras) install_extras=true ;;
+    --gdvm) install_gdvm=true ;;
     --skip-brew) install_brew=false ;;
     --skip-vscode) install_vscode=false ;;
     --help|-h) usage; exit 0 ;;
@@ -85,6 +89,10 @@ mkdir -p "$HOME/.vim/undo"
 
 if [[ "$install_vscode" == true ]]; then
   "$repo_dir/scripts/install-vscode-extensions.sh"
+fi
+
+if [[ "$install_gdvm" == true ]]; then
+  "$repo_dir/scripts/install-gdvm.sh"
 fi
 
 printf '\nSetup complete. Open a new Terminal window.\n'
