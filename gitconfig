@@ -21,8 +21,7 @@
 
 [alias]
     s = status --short --branch
-    graph = log --graph --pretty=format:'%C(bold blue)%h%Creset - %C(yellow)(%ar)%C(reset) %s %C(white)<%an>%Creset %C(reverse yellow)%d%Creset' --abbrev-commit
-    gh = "!gh repo view --web"
+    graph = log --graph --oneline --decorate --all
     pr = "!gh pr create --web"
 
 [filter "lfs"]
@@ -31,6 +30,6 @@
     required = true
     clean = git-lfs clean -- %f
 
-# Override machine- or employer-specific settings here (never commit this file).
+# Optional machine-specific overrides; never commit this local file.
 [include]
     path = ~/.gitconfig.local

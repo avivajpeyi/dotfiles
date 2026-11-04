@@ -1,0 +1,20 @@
+name: Validate dotfiles
+on:
+  push:
+  pull_request:
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install syntax checkers
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zsh shellcheck
+      - name: Check Bash syntax
+        run: bash -n setup.sh scripts/install-vscode-extensions.sh scripts/ssh-info.sh
+      - name: Check Zsh syntax
+        run: zsh -n .zprofile .zshrc .zsh_aliases .zsh_functions
+      - name: ShellCheck
+        run: shellcheck -S warning setup.sh scripts/install-vscode-extensions.sh scripts/ssh-info.sh
