@@ -13,8 +13,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y zsh shellcheck
       - name: Check Bash syntax
-        run: bash -n setup.sh scripts/install-vscode-extensions.sh scripts/ssh-info.sh
+        run: |
+          for file in setup.sh scripts/*.sh; do
+            bash -n "$file"
+          done
       - name: Check Zsh syntax
-        run: zsh -n .zprofile .zshrc .zsh_aliases .zsh_functions
+        run: |
+          for file in .zprofile .zshrc .zsh_aliases .zsh_functions; do
+            zsh -n "$file"
+          done
       - name: ShellCheck
-        run: shellcheck -S warning setup.sh scripts/install-vscode-extensions.sh scripts/ssh-info.sh
+        run: shellcheck -S warning setup.sh scripts/*.sh
