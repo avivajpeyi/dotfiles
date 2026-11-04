@@ -1,0 +1,26 @@
+name: Validate dotfiles
+on:
+  push:
+  pull_request:
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install syntax checkers
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zsh shellcheck
+      - name: Check Bash syntax
+        run: |
+          for file in setup.sh scripts/*.sh; do
+            bash -n "$file"
+          done
+      - name: Check Zsh syntax
+        run: |
+          for file in .zprofile .zshrc .zsh_aliases .zsh_functions; do
+            zsh -n "$file"
+          done
+      - name: ShellCheck
+        run: shellcheck -S warning setup.sh scripts/*.sh
