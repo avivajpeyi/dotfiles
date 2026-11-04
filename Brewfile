@@ -25,3 +25,12 @@ cask "visual-studio-code"
 cask "iterm2"
 cask "stats"
 cask "rectangle"
+
+# Game development, networking, and media.
+cask "godot"
+cask "tailscale-app"
+brew "ffmpeg"
+brew "direnv"
+brew "just"
+brew "dust"
+brew "shellcheck"

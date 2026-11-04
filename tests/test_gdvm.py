@@ -174,19 +174,17 @@ chmod +x "$HOME/.gdvm/bin/gdvm"
             if profile == ".zshrc":
                 self.assertEqual(lines[2], "yes")
 
-    def test_setup_requires_explicit_flag_even_with_extras(self):
+    def test_setup_installs_gdvm_by_default(self):
         checkout = self.root / "checkout"
         shutil.copytree(REPO, checkout, ignore=shutil.ignore_patterns(".git", "__pycache__"))
         spy = checkout / "scripts/install-gdvm.sh"
         spy.write_text('#!/bin/bash\nprintf "called\\n" >> "$CALLS"\n')
-        for flags in [[], ["--extras"], ["--gdvm"]]:
-            result = subprocess.run(
-                ["/bin/bash", str(checkout / "setup.sh"), "--skip-brew",
-                 "--skip-vscode", *flags], env=self.env, capture_output=True,
-                text=True, timeout=10,
-            )
-            self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertEqual((self.root / "calls").exists(), "--gdvm" in flags)
+        result = subprocess.run(
+            ["/bin/bash", str(checkout / "setup.sh"), "--skip-brew", "--skip-vscode"],
+            env=self.env, capture_output=True, text=True, timeout=10,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue((self.root / "calls").exists())
 
 
 if __name__ == "__main__":

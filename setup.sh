@@ -4,28 +4,22 @@ set -euo pipefail
 
 repo_dir="$(cd "$(dirname "$0")" && pwd -P)"
 install_brew=true
-install_extras=false
-install_gdvm=false
 install_vscode=true
 backup_dir=""
 
 usage() {
   cat <<'HELP'
-Usage: ./setup.sh [--extras] [--gdvm] [--skip-brew] [--skip-vscode] [--help]
+Usage: ./setup.sh [--skip-brew] [--skip-vscode] [--help]
 
-Installs the core Brewfile, backs up and symlinks dotfiles, and installs
+Installs the Brewfile, backs up and symlinks dotfiles, and installs
 VS Code Python extensions if the 'code' CLI is available.
---extras enables the optional Godot, Tailscale and ffmpeg Brewfile.
---gdvm runs the upstream interactive Godot Version Manager installer.
-       Separate from --extras; also works with --skip-brew.
+GDVM is installed using its interactive upstream installer.
 No services, remote login, SSH keys, or cleanup jobs are enabled.
 HELP
 }
 
 while (( $# > 0 )); do
   case "$1" in
-    --extras) install_extras=true ;;
-    --gdvm) install_gdvm=true ;;
     --skip-brew) install_brew=false ;;
     --skip-vscode) install_vscode=false ;;
     --help|-h) usage; exit 0 ;;
@@ -51,11 +45,7 @@ if [[ "$install_brew" == true ]]; then
     exit 1
   fi
   brew bundle --file="$repo_dir/Brewfile" --no-upgrade
-  if [[ "$install_extras" == true ]]; then
-    brew bundle --file="$repo_dir/Brewfile.optional" --no-upgrade
-  fi
-elif [[ "$install_extras" == true ]]; then
-  printf 'Note: --extras ignored because --skip-brew was specified.\n'
+
 fi
 
 link_file() {
@@ -91,9 +81,7 @@ if [[ "$install_vscode" == true ]]; then
   "$repo_dir/scripts/install-vscode-extensions.sh"
 fi
 
-if [[ "$install_gdvm" == true ]]; then
-  "$repo_dir/scripts/install-gdvm.sh"
-fi
+"$repo_dir/scripts/install-gdvm.sh"
 
 printf '\nSetup complete. Open a new Terminal window.\n'
 printf 'GitHub login: gh auth login --git-protocol ssh --web\n'

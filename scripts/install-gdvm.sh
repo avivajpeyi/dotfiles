@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Opt-in only: download and run the upstream GDVM installer as the current user.
+# download and run the upstream GDVM installer as the current user.
 set -euo pipefail
 
 if [[ "$(uname -s)" != "Darwin" ]]; then
@@ -14,7 +14,7 @@ fi
 
 # Upstream asks about shortcuts via /dev/tty, even when stdin is redirected.
 if ! ( : </dev/tty ) 2>/dev/null; then
-  printf 'GDVM installation is interactive; rerun --gdvm from a terminal.\n' >&2
+  printf 'GDVM installation is interactive; rerun setup from a terminal.\n' >&2
   exit 1
 fi
 
