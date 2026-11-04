@@ -1,0 +1,8 @@
+# Install these only if you need them:
+#   ./setup.sh --extras
+#
+# Godot for game development; Tailscale for private remote access;
+# ffmpeg for video/animation output.
+cask "godot"
+cask "tailscale-app"
+brew "ffmpeg"

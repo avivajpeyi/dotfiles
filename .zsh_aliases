@@ -1,22 +1,13 @@
-# Navigation and editor
+# Small conveniences only. Python environments are managed with uv.
 alias ll='ls -lah'
 alias la='ls -la'
 alias v='vim'
-alias cdp='cd ~/Documents/projects'
-
-# Git shortcuts
-alias gs='git status'
-alias ga='git add'
-alias gc='git commit'
+alias gs='git status --short --branch'
+alias gl='git log --oneline --graph --decorate -15'
+alias gd='git diff'
 alias gp='git push'
-alias gl='git log --oneline --graph -15'
+alias py='uv run python'
 
-# Convenience
-alias vacti='source .venv/bin/activate'
+# Finder hidden files (macOS).
 alias showFiles='defaults write com.apple.finder AppleShowAllFiles -bool true; killall Finder'
 alias hideFiles='defaults write com.apple.finder AppleShowAllFiles -bool false; killall Finder'
-
-# Older remote-machine shortcuts, retained for convenience.
-alias ozstar='ssh -X avajpeyi@ozstar.swin.edu.au'
-alias pcdev5='ssh avi.vajpeyi@ldas-pcdev5.ligo.caltech.edu'
-alias ligo_init='ligo-proxy-init avi.vajpeyi'
