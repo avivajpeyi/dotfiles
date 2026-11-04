@@ -24,3 +24,5 @@ jobs:
           done
       - name: ShellCheck
         run: shellcheck -S warning setup.sh scripts/*.sh
+      - name: Test optional GDVM installation (offline)
+        run: python3 -m unittest discover -s tests -v
